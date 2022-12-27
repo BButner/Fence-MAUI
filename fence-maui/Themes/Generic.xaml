@@ -1,0 +1,28 @@
+<ResourceDictionary xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+                    xmlns:controls="clr-namespace:fence_maui.Controls">
+    <Style TargetType="{x:Type controls:Monitor}">
+        <Setter Property="ControlTemplate">
+            <Setter.Value>
+                <ControlTemplate>
+                    <Button>
+
+                    </Button>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style TargetType="{x:Type controls:Cursor}">
+        <Setter Property="ControlTemplate">
+            <Setter.Value>
+                <ControlTemplate>
+                    <Ellipse
+                        WidthRequest="10"
+                        HeightRequest="10"
+                        BackgroundColor="Purple"/>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+</ResourceDictionary>
