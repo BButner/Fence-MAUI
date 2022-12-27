@@ -53,9 +53,22 @@ public partial class MainPage : ContentPage
         try
         {
             await mGrpcService.Connect();
+
+            var config = await mGrpcService.GetConfig();
+
+            Monitors = new ObservableCollection<Monitor>( config.Monitors );
+
+            BindingContext = this;
+
+            var reader = await mGrpcService.GetCursorLocationStream();
+
+            Monitors.CollectionChanged += ( _, _ ) => GenerateMonitors( reader );
+
+            GenerateMonitors( reader );
         }
         catch( Exception ex )
         {
+            Console.WriteLine( "Exception on connecting on MainPage..." );
             Console.WriteLine( ex );
         }
     }
