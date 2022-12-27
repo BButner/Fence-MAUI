@@ -14,8 +14,13 @@ namespace fence_maui.Services
         /// Creates a new instance of the ConfigService class,
         /// and loads the <see cref="Config"/>. (Creates and Saves if not exists)
         /// </summary>
-        public ConfigService()
+        public ConfigService( string fileName )
         {
+            if( !string.IsNullOrWhiteSpace( fileName ) )
+            {
+                mFileName = fileName;
+            }
+
             if( File.Exists( mFileName ) )
             {
                 var jsonString = File.ReadAllText( mFileName );

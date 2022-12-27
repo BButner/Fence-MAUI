@@ -1,4 +1,7 @@
-﻿using fence_maui.Services;
+﻿using System.Diagnostics;
+using CommandLine;
+using fence_maui.Models;
+using fence_maui.Services;
 using Microsoft.Extensions.Logging;
 
 namespace fence_maui;
@@ -16,11 +19,17 @@ public static class MauiProgram
                 fonts.AddFont( "OpenSans-Semibold.ttf", "OpenSansSemibold" );
             } );
 
-#if DEBUG
+// #if DEBUG
         builder.Logging.AddDebug();
-#endif
+// #endif
 
-        builder.Services.AddSingleton<ConfigService>();
+        var arguments = new Arguments();
+        Parser.Default.ParseArguments<Arguments>( Environment.GetCommandLineArgs() )
+            .WithParsed( parsed => arguments = parsed );
+
+        var configService = new ConfigService( arguments.Config );
+
+        builder.Services.AddSingleton( configService );
         builder.Services.AddSingleton<GrpcService>();
         builder.Services.AddSingleton<MainPage>();
 
