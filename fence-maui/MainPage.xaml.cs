@@ -1,4 +1,5 @@
 ﻿using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using fence_maui.Services;
 using FenceHostServer;
 using Google.Protobuf.WellKnownTypes;
@@ -60,11 +61,28 @@ public partial class MainPage : ContentPage
 
             BindingContext = this;
 
-            var reader = await mGrpcService.GetCursorLocationStream();
+            mCursorLocationReader = await mGrpcService.GetCursorLocationStream();
 
-            Monitors.CollectionChanged += ( _, _ ) => GenerateMonitors( reader );
+            mGrpcService.ConnectionStatusObservable.Subscribe( status =>
+            {
+                Dispatcher.Dispatch( async () =>
+                {
+                    if( status == ConnectionStatus.CONNECTED )
+                    {
+                        mCursorLocationReader = await mGrpcService.GetCursorLocationStream();
+                        GenerateMonitors();
+                        Monitors.CollectionChanged += OnMonitorsChanged;
+                    }
+                    else
+                    {
+                        Monitors.CollectionChanged -= OnMonitorsChanged;
+                    }
+                } );
+            } );
 
-            GenerateMonitors( reader );
+            GenerateMonitors();
+
+            Monitors.CollectionChanged += OnMonitorsChanged;
         }
         catch( Exception ex )
         {
@@ -73,7 +91,11 @@ public partial class MainPage : ContentPage
         }
     }
 
-    private void GenerateMonitors( IAsyncStreamReader<CursorLocation> reader )
+    private void
+        OnMonitorsChanged( object sender, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs ) =>
+        GenerateMonitors();
+
+    private void GenerateMonitors()
     {
         AbsoluteLayoutDisplays.Children.Clear();
 
@@ -106,12 +128,11 @@ public partial class MainPage : ContentPage
             AbsoluteLayoutDisplays.Children.Add( monitorControl );
         }
 
-        AbsoluteLayoutDisplays.Children.Add( new Controls.Cursor( reader, topOffset, leftOffset, factor ) );
+        AbsoluteLayoutDisplays.Children.Add(
+            new Controls.Cursor( mCursorLocationReader, topOffset, leftOffset, factor ) );
     }
 
-    int count = 0;
-
     private ObservableCollection<Monitor> mMonitors = new();
-    private string mCoordinates = "0,0";
     private GrpcService mGrpcService;
+    private IAsyncStreamReader<CursorLocation> mCursorLocationReader;
 }

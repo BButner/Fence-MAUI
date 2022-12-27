@@ -1,7 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reactive.Linq;
+using System.Reactive.Subjects;
 using System.Text;
+using System.Threading.Channels;
 using System.Threading.Tasks;
 using fence_maui.Models;
 using FenceHostServer;
@@ -35,6 +38,7 @@ namespace fence_maui.Services
                     Console.WriteLine( $"State changed to {channel.State}" );
                     if( channel.State != ConnectivityState.Ready )
                     {
+                        mConnectionStatusSubject.OnNext( ConnectionStatus.DISCONNECTED );
                         Console.WriteLine( "reconnecting..." );
                         while( channel.State != ConnectivityState.Ready )
                         {
@@ -42,17 +46,12 @@ namespace fence_maui.Services
                             await Task.Delay( 1000 );
                         }
 
+                        mConnectionStatusSubject.OnNext( ConnectionStatus.CONNECTED );
                         Console.WriteLine( "reconnected" );
                     }
                 }
             } );
         }
-
-        // private void InitClient()
-        // {
-        //     var channel = GrpcChannel.ForAddress( BuildAddress() );
-        //     var client = new FenceManager.FenceManagerClient( channel );
-        // }
 
         public async Task<ConfigResponse> GetConfig()
         {
@@ -64,10 +63,19 @@ namespace fence_maui.Services
             return mClient.GetCursorLocationStream( new Empty() ).ResponseStream;
         }
 
+        public IObservable<ConnectionStatus> ConnectionStatusObservable => mConnectionStatusSubject;
+
         private string BuildAddress() =>
             $"{mConfig.GrpcHost}:{mConfig.GrpcPort}";
 
         private Config mConfig;
         private FenceManager.FenceManagerClient mClient;
+        private Subject<ConnectionStatus> mConnectionStatusSubject = new();
+    }
+
+    public enum ConnectionStatus
+    {
+        CONNECTED,
+        DISCONNECTED
     }
 }
