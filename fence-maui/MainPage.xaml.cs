@@ -18,25 +18,17 @@ public partial class MainPage : ContentPage
 
         mGrpcService = grpc;
 
-        // Console.WriteLine( config.Config );
-
-        // var channel = GrpcChannel.ForAddress( "http://localhost:50052" );
-        // var client = new FenceManager.FenceManagerClient( channel );
-        //
-        // var config = client.GetConfig( new Empty() );
-        //
-        // Monitors = new ObservableCollection<Monitor>( config.Monitors );
-        //
-        // BindingContext = this;
-        //
-        // var reader = client.GetCursorLocationStream( new Empty() )
-        //     .ResponseStream;
-        //
-        // Monitors.CollectionChanged += ( _, _ ) => GenerateMonitors( reader );
-        //
-        // GenerateMonitors( reader );
-
         Loaded += OnLoaded;
+    }
+
+    public bool Connected
+    {
+        get => mConnected;
+        set
+        {
+            mConnected = value;
+            OnPropertyChanged();
+        }
     }
 
     public ObservableCollection<Monitor> Monitors
@@ -55,6 +47,8 @@ public partial class MainPage : ContentPage
         {
             await mGrpcService.Connect();
 
+            Connected = true;
+
             var config = await mGrpcService.GetConfig();
 
             Monitors = new ObservableCollection<Monitor>( config.Monitors );
@@ -67,6 +61,8 @@ public partial class MainPage : ContentPage
             {
                 Dispatcher.Dispatch( async () =>
                 {
+                    Connected = status == ConnectionStatus.CONNECTED;
+
                     if( status == ConnectionStatus.CONNECTED )
                     {
                         mCursorLocationReader = await mGrpcService.GetCursorLocationStream();
@@ -135,4 +131,5 @@ public partial class MainPage : ContentPage
     private ObservableCollection<Monitor> mMonitors = new();
     private GrpcService mGrpcService;
     private IAsyncStreamReader<CursorLocation> mCursorLocationReader;
+    private bool mConnected;
 }

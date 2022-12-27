@@ -11,16 +11,40 @@
         </ResourceDictionary>
     </ContentPage.Resources>
 
-    <ScrollView>
-        <VerticalStackLayout
-            Spacing="25"
-            VerticalOptions="Start">
-            <Frame
-                HorizontalOptions="Center"
-                Padding="10">
-                <AbsoluteLayout
-                    x:Name="AbsoluteLayoutDisplays"/>
-            </Frame>
-        </VerticalStackLayout>
-    </ScrollView>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <ScrollView>
+            <VerticalStackLayout
+                Spacing="25"
+                VerticalOptions="Start">
+                <Frame
+                    HorizontalOptions="Center"
+                    Padding="10">
+                    <AbsoluteLayout
+                        x:Name="AbsoluteLayoutDisplays"/>
+                </Frame>
+            </VerticalStackLayout>
+        </ScrollView>
+
+        <HorizontalStackLayout
+            Grid.Row="1">
+            <Border
+                StrokeThickness="0"
+                HeightRequest="32"
+                WidthRequest="256">
+                <Border.Triggers>
+                    <DataTrigger TargetType="Border" Binding="{Binding Connected}" Value="False">
+                        <Setter Property="BackgroundColor" Value="PaleVioletRed"/>
+                    </DataTrigger>
+                    <DataTrigger TargetType="Border" Binding="{Binding Connected}" Value="True">
+                        <Setter Property="BackgroundColor" Value="PaleGreen"/>
+                    </DataTrigger>
+                </Border.Triggers>
+            </Border>
+        </HorizontalStackLayout>
+    </Grid>
 </ContentPage>
