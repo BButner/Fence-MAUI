@@ -24,25 +24,25 @@ namespace fence_maui.Services
 
         public async Task Connect()
         {
-            var channel = GrpcChannel.ForAddress( BuildAddress() );
-            mClient = new FenceManager.FenceManagerClient( channel );
+            mChannel = GrpcChannel.ForAddress( BuildAddress() );
+            mClient = new FenceManager.FenceManagerClient( mChannel );
 
-            await channel.ConnectAsync();
+            await mChannel.ConnectAsync();
 
             var _ = Task.Run( async () =>
             {
                 while( true )
                 {
-                    await channel.WaitForStateChangedAsync( channel.State );
+                    await mChannel.WaitForStateChangedAsync( mChannel.State );
 
-                    Console.WriteLine( $"State changed to {channel.State}" );
-                    if( channel.State != ConnectivityState.Ready )
+                    Console.WriteLine( $"State changed to {mChannel.State}" );
+                    if( mChannel.State != ConnectivityState.Ready )
                     {
                         mConnectionStatusSubject.OnNext( ConnectionStatus.DISCONNECTED );
                         Console.WriteLine( "reconnecting..." );
-                        while( channel.State != ConnectivityState.Ready )
+                        while( mChannel.State != ConnectivityState.Ready )
                         {
-                            await channel.ConnectAsync();
+                            await mChannel.ConnectAsync();
                             await Task.Delay( 1000 );
                         }
 
@@ -52,6 +52,10 @@ namespace fence_maui.Services
                 }
             } );
         }
+
+        public FenceManager.FenceManagerClient Client => mClient;
+
+        public GrpcChannel Channel => mChannel;
 
         public async Task<ConfigResponse> GetConfig()
         {
@@ -70,6 +74,7 @@ namespace fence_maui.Services
 
         private Config mConfig;
         private FenceManager.FenceManagerClient mClient;
+        private GrpcChannel mChannel;
         private Subject<ConnectionStatus> mConnectionStatusSubject = new();
     }
 

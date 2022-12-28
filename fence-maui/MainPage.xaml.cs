@@ -1,5 +1,6 @@
 ﻿using System.Collections.ObjectModel;
 using System.Collections.Specialized;
+using fence_maui.Models;
 using fence_maui.Services;
 using FenceHostServer;
 using Google.Protobuf.WellKnownTypes;
@@ -31,6 +32,8 @@ public partial class MainPage : ContentPage
         }
     }
 
+    public string GrpcTarget { get; private set; }
+
     public ObservableCollection<Monitor> Monitors
     {
         get => mMonitors;
@@ -48,6 +51,8 @@ public partial class MainPage : ContentPage
             await mGrpcService.Connect();
 
             Connected = true;
+            GrpcTarget = mGrpcService.Channel.Target;
+            OnPropertyChanged( nameof( GrpcTarget ) );
 
             var config = await mGrpcService.GetConfig();
 
