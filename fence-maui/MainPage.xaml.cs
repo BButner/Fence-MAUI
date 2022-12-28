@@ -1,5 +1,6 @@
 ﻿using System.Collections.ObjectModel;
 using System.Collections.Specialized;
+using fence_maui.Controls;
 using fence_maui.Models;
 using fence_maui.Services;
 using FenceHostServer;
@@ -116,7 +117,7 @@ public partial class MainPage : ContentPage
 
         foreach( var monitor in Monitors )
         {
-            var monitorControl = new Controls.Monitor( monitor );
+            var monitorControl = new MonitorButton( monitor );
 
             AbsoluteLayout.SetLayoutBounds( monitorControl,
                 new Rect(

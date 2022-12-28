@@ -22,8 +22,11 @@
                 Spacing="25"
                 VerticalOptions="Start">
                 <Frame
+                    HasShadow="False"
+                    BackgroundColor="#F0F0F0"
+                    BorderColor="#F0F0F0"
                     HorizontalOptions="Center"
-                    Padding="10">
+                    Padding="12">
                     <AbsoluteLayout
                         x:Name="AbsoluteLayoutDisplays"/>
                 </Frame>

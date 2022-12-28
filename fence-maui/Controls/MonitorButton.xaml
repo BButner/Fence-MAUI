@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<Frame xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+       xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+       x:Class="fence_maui.Controls.MonitorButton"
+       BindingContext="{Binding Source={RelativeSource Self}}"
+       Padding="2"
+       HasShadow="False"
+       BackgroundColor="Transparent">
+    <Button
+        BackgroundColor="#802563eb"
+        BorderColor="#2563eb"
+        CornerRadius="4"
+        BorderWidth="2"/>
+</Frame>

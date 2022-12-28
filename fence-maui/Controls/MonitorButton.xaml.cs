@@ -1,16 +1,24 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
 namespace fence_maui.Controls
 {
-    public class Monitor : ContentView
+    public partial class MonitorButton : Frame
     {
-        public Monitor( FenceHostServer.Monitor monitor )
+        public MonitorButton( FenceHostServer.Monitor monitor )
         {
-            Width = monitor.Width;
-            Height = monitor.Height;
-            Top = monitor.Top;
-            Left = monitor.Left;
+            MonitorWidth = monitor.Width;
+            MonitorHeight = monitor.Height;
+            MonitorTop = monitor.Top;
+            MonitorLeft = monitor.Left;
+
+            InitializeComponent();
         }
 
-        public double Width
+        public double MonitorWidth
         {
             get => mWidth;
             set
@@ -20,7 +28,7 @@ namespace fence_maui.Controls
             }
         }
 
-        public double Height
+        public double MonitorHeight
         {
             get => mHeight;
             set
@@ -30,7 +38,7 @@ namespace fence_maui.Controls
             }
         }
 
-        public double Top
+        public double MonitorTop
         {
             get => mTop;
             set
@@ -40,7 +48,7 @@ namespace fence_maui.Controls
             }
         }
 
-        public double Left
+        public double MonitorLeft
         {
             get => mLeft;
             set
