@@ -22,13 +22,19 @@
                 Spacing="25"
                 VerticalOptions="Start">
                 <Frame
-                    HasShadow="False"
+                    Margin="50"
                     BackgroundColor="#F0F0F0"
                     BorderColor="#F0F0F0"
                     HorizontalOptions="Center"
                     Padding="12">
                     <AbsoluteLayout
                         x:Name="AbsoluteLayoutDisplays"/>
+
+                    <Frame.Shadow>
+                        <Shadow
+                            Radius="20"
+                            Opacity="0.5"/>
+                    </Frame.Shadow>
                 </Frame>
             </VerticalStackLayout>
         </ScrollView>
